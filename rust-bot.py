@@ -81,9 +81,12 @@ async def on_message(message):
         except:
             await client.send_message(message.channel, "Blog seems to be unavailable. Please try again later.")
 
-    elif message.content.startswith('!mentionme') and message.channel == channel_chat and (
-            time.time() - LASTMSGTIME) > 0.5:
-        await client.send_message(message.channel, "Why, {}?".format(message.author.id))
+    elif message.content.startswith('!mentionme') and message.channel == channel_chat:
+        if await save_to_notification_list(message.author.id):
+            await client.send_message(message.channel,
+                                      "I'll mention you when new blog posts are added <@{}>.".format(message.author.id))
+        else:
+            await client.send_message(message.channel, "You are already on the list <@{}>.".format(message.author.id))
     LASTMSGTIME = time.time()
 
 
@@ -105,6 +108,23 @@ async def player_list(server):
     else:
         return random.choice(open('lines').readlines())
 
+
+def save_to_notification_list(user_id):
+    list = load_notifications_list()
+    if user_id not in list:
+        list.append(user_id)
+        with open('notification_list', 'w') as f:
+            for item in list:
+                f.write("{}\n".format(item))
+            return True
+    else:
+        return False
+
+
+def load_notifications_list():
+    with open('notification_list', 'r') as f:
+        noti_list = f.read().splitlines()
+    return noti_list
 
 def get_token():
     with open('token', 'r') as f:

@@ -31,9 +31,9 @@ async def background_loop():
     await client.wait_until_ready()
     channel_chat = client.get_channel("347799017671098369")
     server = client.get_server("155794864305471497")
-
+    myself = server.get_member("385874561792737293")
     await client.change_presence(game=discord.Game(name='Rust Configuration'))
-    # await client.change_nickname(, "Rusty")
+    await client.change_nickname(myself, "Rusty")
 
     print("Initializing rss check for {}".format(feed['feed']['title']))
     print("Most recent item:\n{}\n{}".format(post['title'], post['link']))

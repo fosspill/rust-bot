@@ -50,9 +50,8 @@ async def on_message(message):
     channel_chat = client.get_channel("347799017671098369")
 
     if message.content.startswith('!online') and message.channel == channel_chat and (time.time()-LASTMSGTIME) > 2:
-        tmp = await client.send_message(message.channel, 'Getting data...')
-
-        await client.edit_message(tmp, '{}'.format(player_list((SERVER, PORT))))
+        await client.send_typing(channel_chat)
+        await client.send_message(message.channel, '{}'.format(player_list((SERVER, PORT))))
     elif message.content.startswith('!help') and message.channel == channel_chat and (time.time()-LASTMSGTIME) > 0.5:
         await client.send_message(message.channel, 'I currently have 3 functions:\n* !online - shows online players\n* !lastpost - Shows last Blog post\n* Rust Blog notifications')
     elif message.content.startswith('!lastpost') and message.channel == channel_chat and (time.time()-LASTMSGTIME) > 0.5:
@@ -66,6 +65,7 @@ async def on_message(message):
     LASTMSGTIME = time.time()
 
 def player_list(server):
+    time.sleep(1.5)
     try:
         server = valve.source.a2s.ServerQuerier(server)
         players = server.players()
@@ -83,6 +83,10 @@ def player_list(server):
     else:
         return random.choice(open('lines').readlines())
 
+def get_token():
+    with open('token', 'r') as f:
+        return f.readline()
+
 
 client.loop.create_task(background_loop())
-client.run('INSERT TOKEN HERE')
+client.run(get_token())

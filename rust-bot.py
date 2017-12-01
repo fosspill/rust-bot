@@ -53,7 +53,11 @@ async def background_loop():
 
         if post != feed['entries'][0]:
             post = feed['entries'][0]
-            await client.send_message(channel_chat, "NEW POST!\n{}\n{}".format(post['title'], post['link']))
+            mentions_string = ""
+            for m in load_notifications_list():
+                mentions_string = "{}".format(mentions_string) + "<@{}>".format(m)
+            await client.send_message(channel_chat,
+                                      "NEW POST!\n{}\n{}\n{}".format(post['title'], post['link'], mentions_string))
         await asyncio.sleep(60)
 
 

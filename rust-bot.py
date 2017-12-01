@@ -44,6 +44,10 @@ async def background_loop():
     print("Most recent item:\n{}\n{}".format(post['title'], post['link']))
 
     print("On list: {}".format(', '.join(map(str, load_notifications_list()))))
+    mentions_string = ""
+    for m in load_notifications_list():
+        mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
+    print(mentions_string)
     while not client.is_closed:
         try:
             feed = feedparser.parse(url)
@@ -55,7 +59,7 @@ async def background_loop():
             post = feed['entries'][0]
             mentions_string = ""
             for m in load_notifications_list():
-                mentions_string = "{}".format(mentions_string) + "<@{}>".format(m)
+                mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
             await client.send_message(channel_chat,
                                       "NEW POST!\n{}\n{}\n{}".format(post['title'], post['link'], mentions_string))
         await asyncio.sleep(60)
@@ -94,6 +98,7 @@ async def on_message(message):
             print("On list: {}".format(', '.join(map(str, load_notifications_list()))))
         else:
             await client.send_message(message.channel, "You are already on the list <@{}>.".format(message.author.id))
+
     LASTMSGTIME = time.time()
 
 

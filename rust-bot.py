@@ -85,7 +85,7 @@ def player_list(server):
 
 def get_token():
     with open('token', 'r') as f:
-        return f.readline()
+        return f.readline().strip()
 
 
 client.loop.create_task(background_loop())

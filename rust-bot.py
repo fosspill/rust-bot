@@ -42,6 +42,8 @@ async def background_loop():
 
     print("Initializing rss check for {}".format(feed['feed']['title']))
     print("Most recent item:\n{}\n{}".format(post['title'], post['link']))
+
+    print("On list: {}".format(', '.join(map(str, load_notifications_list()))))
     while not client.is_closed:
         try:
             feed = feedparser.parse(url)
@@ -85,6 +87,7 @@ async def on_message(message):
         if save_to_notification_list(message.author.id):
             await client.send_message(message.channel,
                                       "I'll mention you when new blog posts are added <@{}>.".format(message.author.id))
+            print("On list: {}".format(', '.join(map(str, load_notifications_list()))))
         else:
             await client.send_message(message.channel, "You are already on the list <@{}>.".format(message.author.id))
     LASTMSGTIME = time.time()

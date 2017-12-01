@@ -32,6 +32,11 @@ async def background_loop():
     channel_chat = client.get_channel("347799017671098369")
     server = client.get_server("155794864305471497")
     myself = server.get_member("385874561792737293")
+    with open('avatar.png', 'rb') as file:
+        avatar = file.read()
+
+    await client.edit_profile(None, avatar=avatar)
+
     await client.change_presence(game=discord.Game(name='Rust Configuration'))
     await client.change_nickname(myself, "Rusty")
 

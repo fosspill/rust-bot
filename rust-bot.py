@@ -32,10 +32,10 @@ async def background_loop():
     channel_chat = client.get_channel("347799017671098369")
     server = client.get_server("155794864305471497")
     myself = server.get_member("385874561792737293")
-    with open('avatar.png', 'rb') as file:
-        avatar = file.read()
+    #    with open('avatar.png', 'rb') as file:
+    #        avatar = file.read()
 
-    await client.edit_profile(None, avatar=avatar)
+    #    await client.edit_profile(None, avatar=avatar)
 
     await client.change_presence(game=discord.Game(name='Rust Configuration'))
     await client.change_nickname(myself, "Rusty")
@@ -69,7 +69,7 @@ async def on_message(message):
         await client.send_message(message.channel,
                                   'I currently have 3 functions:\n'
                                   '* !online - shows online players\n* !lastpost - Shows last Blog post\n* Rust Blog '
-                                  'notifications')
+                                  'notifications\n* !mentionme - Notify me when new blog posts are available')
 
     elif message.content.startswith('!lastpost') and message.channel == channel_chat and (
             time.time() - LASTMSGTIME) > 0.5:

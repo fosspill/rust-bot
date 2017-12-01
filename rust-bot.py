@@ -83,7 +83,7 @@ async def on_message(message):
 
     elif message.content.startswith('!mentionme') and message.channel == channel_chat and (
             time.time() - LASTMSGTIME) > 0.5:
-        await client.send_message(message.channel, "Why, {}?".format(message.author.mention))
+        await client.send_message(message.channel, "Why, {}?".format(message.author.id))
     LASTMSGTIME = time.time()
 
 

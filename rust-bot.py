@@ -1,9 +1,10 @@
-import discord
 import asyncio
-import feedparser
-import valve.source.a2s
 import random
 import time
+
+import discord
+import feedparser
+import valve.source.a2s
 
 SERVER = "163.172.17.175"
 PORT = 30616
@@ -11,6 +12,7 @@ PORT = 30616
 LASTMSGTIME = time.time()
 
 client = discord.Client()
+
 
 @client.event
 async def on_ready():
@@ -20,9 +22,8 @@ async def on_ready():
     print('Invite: https://discordapp.com/oauth2/authorize?client_id={}&scope=bot'.format(client.user.id))
     print('------')
 
+
 async def background_loop():
-
-
     url = "https://rust.facepunch.com/rss/blog/"
     feed = feedparser.parse(url)
     post = feed['entries'][0]
@@ -44,17 +45,20 @@ async def background_loop():
             await client.send_message(channel_chat, "NEW POST!\n{}\n{}".format(post['title'], post['link']))
         await asyncio.sleep(60)
 
+
 @client.event
 async def on_message(message):
     global LASTMSGTIME
     channel_chat = client.get_channel("347799017671098369")
 
-    if message.content.startswith('!online') and message.channel == channel_chat and (time.time()-LASTMSGTIME) > 2:
+    if message.content.startswith('!online') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 2:
         await client.send_typing(channel_chat)
         await client.send_message(message.channel, '{}'.format(player_list((SERVER, PORT))))
-    elif message.content.startswith('!help') and message.channel == channel_chat and (time.time()-LASTMSGTIME) > 0.5:
-        await client.send_message(message.channel, 'I currently have 3 functions:\n* !online - shows online players\n* !lastpost - Shows last Blog post\n* Rust Blog notifications')
-    elif message.content.startswith('!lastpost') and message.channel == channel_chat and (time.time()-LASTMSGTIME) > 0.5:
+    elif message.content.startswith('!help') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 0.5:
+        await client.send_message(message.channel,
+                                  'I currently have 3 functions:\n* !online - shows online players\n* !lastpost - Shows last Blog post\n* Rust Blog notifications')
+    elif message.content.startswith('!lastpost') and message.channel == channel_chat and (
+            time.time() - LASTMSGTIME) > 0.5:
         try:
             url = "https://rust.facepunch.com/rss/blog/"
             feed = feedparser.parse(url)
@@ -63,6 +67,7 @@ async def on_message(message):
         except:
             await client.send_message(message.channel, "Blog seems to be unavailable. Please try again later.")
     LASTMSGTIME = time.time()
+
 
 def player_list(server):
     time.sleep(1.5)
@@ -75,13 +80,14 @@ def player_list(server):
         return "Sorry, I failed at getting current server information: {}".format(e)
 
     if len(players["players"]) > 0:
-        templist=[]
+        templist = []
         for player in players["players"]:
             templist.append(player["name"])
         returnlist = "{}/{} players: {}".format(num_players, max_players, ', '.join(map(str, templist)))
         return returnlist
     else:
         return random.choice(open('lines').readlines())
+
 
 def get_token():
     with open('token', 'r') as f:

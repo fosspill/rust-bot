@@ -82,7 +82,7 @@ async def on_message(message):
             await client.send_message(message.channel, "Blog seems to be unavailable. Please try again later.")
 
     elif message.content.startswith('!mentionme') and message.channel == channel_chat:
-        if await save_to_notification_list(message.author.id):
+        if save_to_notification_list(message.author.id):
             await client.send_message(message.channel,
                                       "I'll mention you when new blog posts are added <@{}>.".format(message.author.id))
         else:

@@ -116,7 +116,7 @@ def save_to_notification_list(user_id):
         with open('notification_list', 'w') as f:
             for item in list:
                 f.write("{}\n".format(item))
-            return True
+        return True
     else:
         return False
 

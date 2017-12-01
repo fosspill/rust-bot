@@ -56,7 +56,9 @@ async def on_message(message):
         await client.send_message(message.channel, '{}'.format(player_list((SERVER, PORT))))
     elif message.content.startswith('!help') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 0.5:
         await client.send_message(message.channel,
-                                  'I currently have 3 functions:\n* !online - shows online players\n* !lastpost - Shows last Blog post\n* Rust Blog notifications')
+                                  'I currently have 3 functions:\n'
+                                  '* !online - shows online players\n* !lastpost - Shows last Blog post\n* Rust Blog '
+                                  'notifications')
     elif message.content.startswith('!lastpost') and message.channel == channel_chat and (
             time.time() - LASTMSGTIME) > 0.5:
         try:

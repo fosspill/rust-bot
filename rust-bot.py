@@ -66,7 +66,6 @@ async def on_message(message):
     LASTMSGTIME = time.time()
 
 def player_list(server):
-    time.sleep(1.5)
     try:
         server = valve.source.a2s.ServerQuerier(server)
         players = server.players()

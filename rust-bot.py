@@ -31,6 +31,9 @@ async def background_loop():
     await client.wait_until_ready()
     channel_chat = client.get_channel("347799017671098369")
 
+    await client.change_presence(game=discord.Game(name='Rust Configuration'))
+    await client.change_nickname(client.user, "Rusty")
+
     print("Initializing rss check for {}".format(feed['feed']['title']))
     print("Most recent item:\n{}\n{}".format(post['title'], post['link']))
     while not client.is_closed:
@@ -53,6 +56,7 @@ async def on_message(message):
 
     if message.content.startswith('!online') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 2:
         await client.send_typing(channel_chat)
+        await asyncio.sleep(1.5)
         await client.send_message(message.channel, '{}'.format(player_list((SERVER, PORT))))
     elif message.content.startswith('!help') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 0.5:
         await client.send_message(message.channel,
@@ -72,7 +76,6 @@ async def on_message(message):
 
 
 def player_list(server):
-    time.sleep(1.5)
     try:
         server = valve.source.a2s.ServerQuerier(server)
         players = server.players()

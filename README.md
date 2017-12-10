@@ -2,10 +2,10 @@
 Rust discord bot for the GoL Dicord server
 
 # Todo
-* Make code cleaner.
-* Make the player-list function properly async
+* Started: Make code cleaner.
+* Done? Make the player-list function properly async
 * Make message cooldown individual rather than global
-* Add !mentionme command. Will result in the bot mentioning the issuer when new blog posts are detected.
+* Done: Add !mentionme command. Will result in the bot mentioning the issuer when new blog posts are detected.
 * Add !stop command. ^
 
 # Instructions

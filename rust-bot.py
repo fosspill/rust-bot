@@ -69,6 +69,8 @@ async def background_loop():
 async def on_message(message):
     global LASTMSGTIME
     channel_chat = client.get_channel("347799017671098369")
+    server = client.get_server("155794864305471497")
+    boss = server.get_member("152135474452889601")
 
     if message.content.startswith('!online') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 2:
         await client.send_typing(channel_chat)
@@ -98,6 +100,9 @@ async def on_message(message):
             print("On list: {}".format(', '.join(map(str, load_notifications_list()))))
         else:
             await client.send_message(message.channel, "You are already on the list <@{}>.".format(message.author.id))
+
+    elif message.content.startswith('!potato ') and message.author == boss:
+        await client.send_message(channel_chat, message.content.replace("!potato ", ""))
 
     LASTMSGTIME = time.time()
 

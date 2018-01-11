@@ -7,7 +7,7 @@ import time
 import os
 import valve.source.a2s
 
-SERVER = "163.172.17.175"
+SERVER = "163.172.17.75"
 PORT = 30616
 
 pipe_path = "/tmp/pipe2bot"
@@ -21,13 +21,13 @@ apiurl = "https://api.facepunch.com/api/public/manifest/?public_key=j0VF6sNnzn9r
 #Usage: player_list((SERVER, PORT))
 def serverinfo(server):
     result = None
-    tries = 0
-    while result is None or tries <= 3:
+    tries = 1
+    while result is None and tries <= 3:
         try:
             serverdict = {}
 
-            server = valve.source.a2s.ServerQuerier(server)
-            players = server.players()
+            serverObj = valve.source.a2s.ServerQuerier(server)
+            players = serverObj.players()
             if len(players) > 0:
                 playernamelist = []
                 playertimelist = []
@@ -37,18 +37,23 @@ def serverinfo(server):
                 serverdict["playernames"] = playernamelist
                 serverdict["playertimes"] = playertimelist
             serverdict["num_players"], serverdict["max_players"], serverdict["server_name"], serverdict["version"] = \
-            server.info()["player_count"], \
-            server.info()["max_players"], \
-            server.info()["server_name"], \
-            server.info()["version"]
-            serverdict["ping"] = round(server.ping())
+            serverObj.info()["player_count"], \
+            serverObj.info()["max_players"], \
+            serverObj.info()["server_name"], \
+            serverObj.info()["version"]
+            serverdict["ping"] = round(serverObj.ping())
             result = serverdict
         except Exception as e:
             print(e)
-            time.sleep(10)
+            time.sleep(1)
+            tries += 1
             pass
-    with open(servercache, 'w') as file:
-        file.write(json.dumps(result))
+    if not tries > 3:
+        with open(servercache, 'w') as file:
+            file.write(json.dumps(result))
+    else:
+        print("Tried too many times. fml.")
+
 
 
 
@@ -82,7 +87,6 @@ def mostRecentItem():
             datetimelist.append(extracttime(item))
             contentlist.append(extractcontent(item))
     fulldict = (dict(zip(datetimelist, contentlist)))
-    print (fulldict)
 
     return sorted(fulldict.items(), key=lambda p: p[0], reverse=True)[0][1]
 

@@ -107,8 +107,7 @@ async def on_message(message):
 
 def player_list(server):
     serverdict = json.load(open(server_cache))
-    print("{}/{} players: {}".format(serverdict["player_count"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"]))))
-    returnlist = "{}/{} players: {}".format(serverdict["player_count"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"])))
+    returnlist = "{}/{} players: {}".format(serverdict["num_players"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"])))
     return returnlist
 
     #except Exception as e:

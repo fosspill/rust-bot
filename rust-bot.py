@@ -113,7 +113,8 @@ def player_list(server):
         returnlist = "{}/{} players: {}".format(num_players, max_players, ', '.join(map(str, players)))
         return returnlist
 
-    except:
+    except Exception as e:
+        print(e)
         return random.choice(open('lines').readlines())
 
 def save_to_notification_list(user_id):

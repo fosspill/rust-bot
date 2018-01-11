@@ -43,8 +43,8 @@ async def background_loop():
     for m in load_notifications_list():
         mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
     print(mentions_string)
-    pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
     while not client.is_closed:
+        pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
         with os.fdopen(pipe_fd) as pipe:
             try:
                 message = pipe.read()
@@ -58,8 +58,7 @@ async def background_loop():
                                               "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
             await asyncio.sleep(1)
             mentions_string = ""
-
-            await asyncio.sleep(60)
+        await asyncio.sleep(60)
 
 
 @client.event

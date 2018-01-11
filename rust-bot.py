@@ -60,7 +60,7 @@ async def background_loop():
                 #await client.send_message(channel_chat, "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
                 print(message.strip("\n"))
             mentions_string = ""
-        await asyncio.sleep(5)
+            await asyncio.sleep(5)
 
 
 @client.event

@@ -110,6 +110,7 @@ while True:
 
     if loopLastPost != lastPost:
         toPipe(mostRecentItem())
-    print (loopLastPost)
-    #serverinfo((SERVER, PORT))
+        lastPost = mostRecentItem()
+    print(loopLastPost)
+    serverinfo((SERVER, PORT))
     time.sleep(sleeptime)

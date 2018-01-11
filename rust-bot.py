@@ -11,6 +11,7 @@ SERVER = "163.172.17.175"
 PORT = 30616
 
 pipe_path = "/tmp/pipe2bot"
+server_cache = "/tmp/rustsrvcache"
 if not os.path.exists(pipe_path):
     os.mkfifo(pipe_path)
 
@@ -104,23 +105,15 @@ async def on_message(message):
 
 
 def player_list(server):
+    serverdict = json.load(open(server_cache))
     try:
-        server = valve.source.a2s.ServerQuerier(server)
-        players = server.players()
-        num_players, max_players = server.info()["player_count"], server.info()["max_players"]
-
-    except Exception as e:
-        return "Sorry, I failed at getting current server information: {}".format(e)
-
-    if len(players["players"]) > 0:
-        templist = []
-        for player in players["players"]:
-            templist.append(player["name"])
-        returnlist = "{}/{} players: {}".format(num_players, max_players, ', '.join(map(str, templist)))
+        players = serverdict["playernames"]
+        num_players, max_players = serverdict["player_count"], serverdict["max_players"]
+        returnlist = "{}/{} players: {}".format(num_players, max_players, ', '.join(map(str, players)))
         return returnlist
-    else:
-        return random.choice(open('lines').readlines())
 
+    except:
+        return random.choice(open('lines').readlines())
 
 def save_to_notification_list(user_id):
     list = load_notifications_list()

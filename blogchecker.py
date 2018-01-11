@@ -5,12 +5,50 @@ import json
 from dateutil import parser
 import time
 import os
+import valve.source.a2s
+
+SERVER = "163.172.17.175"
+PORT = 30616
 
 pipe_path = "/tmp/pipe2bot"
 
-sleeptime = 5
+servercache = "/tmp/rustsrvcache"
+
+sleeptime = 30
 
 apiurl = "https://api.facepunch.com/api/public/manifest/?public_key=j0VF6sNnzn9rwt9qTZtI02zTYK8PRdN1"
+
+#Usage: player_list((SERVER, PORT))
+def serverinfo(server):
+    result = None
+    while result is None:
+        try:
+            serverdict = {}
+
+            server = valve.source.a2s.ServerQuerier(server)
+            players = server.players()
+            if len(players) > 0:
+                playernamelist = []
+                playertimelist = []
+                for player in players["players"]:
+                    playernamelist.append(player["name"])
+                    playertimelist.append(player["duration"])
+                serverdict["playernames"] = playernamelist
+                serverdict["playertimes"] = playertimelist
+            serverdict["num_players"], serverdict["max_players"], serverdict["server_name"], serverdict["version"] = \
+            server.info()["player_count"], \
+            server.info()["max_players"], \
+            server.info()["server_name"], \
+            server.info()["version"]
+            serverdict["ping"] = round(server.ping())
+            result = serverdict
+        except Exception as e:
+            print(e)
+            time.sleep(10)
+            pass
+    with open(servercache, 'w') as file:
+        file.write(json.dumps(result))
+
 
 
 # They have two ways of defining Date and Content. Both are accounted for.
@@ -56,7 +94,7 @@ if not os.path.exists(pipe_path):
 lastPost = mostRecentItem()
 print("Startup: {}".format(lastPost))
 
-time.sleep(sleeptime)
+time.sleep(10)
 
 while True:
     success = False
@@ -70,5 +108,5 @@ while True:
 
     if loopLastPost != lastPost:
         toPipe(mostRecentItem())
-
+    serverinfo((SERVER, PORT))
     time.sleep(sleeptime)

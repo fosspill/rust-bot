@@ -45,13 +45,14 @@ async def background_loop():
     for m in load_notifications_list():
         mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
     print(mentions_string)
+    pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
     while not client.is_closed:
-        pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
         with os.fdopen(pipe_fd) as pipe:
             try:
                 message = pipe.read()
-            except:
+            except Exception as e:
                 message = False
+                print(e)
             if message:
                 print("Received: '%s'" % message.strip("\n"))
                 for m in load_notifications_list():

@@ -5,6 +5,7 @@ import os
 
 import discord
 import feedparser
+import json
 import valve.source.a2s
 
 SERVER = "163.172.17.175"

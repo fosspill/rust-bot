@@ -11,6 +11,9 @@ SERVER = "163.172.17.175"
 PORT = 30616
 
 pipe_path = "/tmp/pipe2bot"
+if not os.path.exists(pipe_path):
+    os.mkfifo(pipe_path)
+
 
 LASTMSGTIME = time.time()
 

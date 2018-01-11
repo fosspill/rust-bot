@@ -7,7 +7,7 @@ import time
 import os
 import valve.source.a2s
 
-SERVER = "163.172.17.75"
+SERVER = "163.172.17.175"
 PORT = 30616
 
 pipe_path = "/tmp/pipe2bot"

@@ -45,7 +45,7 @@ async def background_loop():
     for m in load_notifications_list():
         mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
     print(mentions_string)
-    pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
+    pipe_fd = os.open("/tmp/pipe2bot", os.O_RDONLY | os.O_NONBLOCK)
     while not client.is_closed:
         with os.fdopen(pipe_fd) as pipe:
             try:
@@ -59,9 +59,8 @@ async def background_loop():
                     mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
                 await client.send_message(channel_chat,
                                               "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
-            await asyncio.sleep(1)
             mentions_string = ""
-        await asyncio.sleep(60)
+        await asyncio.sleep(5)
 
 
 @client.event

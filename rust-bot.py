@@ -70,7 +70,7 @@ async def on_message(message):
     server = client.get_server("155794864305471497")
     boss = server.get_member("152135474452889601")
 
-    if message.content.startswith('!online') and message.channel == channel_chat and (time.time() - LASTMSGTIME) > 2:
+    if message.content.startswith('!online')  and (time.time() - LASTMSGTIME) > 2:
         await client.send_typing(channel_chat)
         await asyncio.sleep(1.5)
         await client.send_message(message.channel, '{}'.format(player_list((SERVER, PORT))))
@@ -107,11 +107,9 @@ async def on_message(message):
 
 def player_list(server):
     serverdict = json.load(open(server_cache))
-    print (serverdict)
     try:
         players = serverdict["playernames"]
-        num_players, max_players = serverdict["player_count"], serverdict["max_players"]
-        returnlist = "{}/{} players: {}".format(num_players, max_players, ', '.join(map(str, players)))
+        returnlist = "{}/{} players: {}".format(serverdict["player_count"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"])))
         return returnlist
 
     except Exception as e:

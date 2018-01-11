@@ -21,7 +21,8 @@ apiurl = "https://api.facepunch.com/api/public/manifest/?public_key=j0VF6sNnzn9r
 #Usage: player_list((SERVER, PORT))
 def serverinfo(server):
     result = None
-    while result is None:
+    tries = 0
+    while result is None or tries <= 3:
         try:
             serverdict = {}
 
@@ -70,17 +71,18 @@ def extractcontent(item):
 def mostRecentItem():
     # Loading from json facepunch api
     urlresult = urllib.request.urlopen(apiurl)
-    jsonOutput = json.loads(urlresult.read().decode("utf-8"))["News"]
+    jsonOutput = json.loads(urlresult.read().decode("utf-8"))["News"]["Blogs"]
 
     # Defining lists needed
     datetimelist = []
     contentlist = []
 
     for item in jsonOutput:
-        for item2 in jsonOutput[item]:
-            datetimelist.append(extracttime(item2))
-            contentlist.append(extractcontent(item2))
+        if item["ShortName"].startswith("dev") or item["ShortName"].startswith("community"):
+            datetimelist.append(extracttime(item))
+            contentlist.append(extractcontent(item))
     fulldict = (dict(zip(datetimelist, contentlist)))
+    print (fulldict)
 
     return sorted(fulldict.items(), key=lambda p: p[0], reverse=True)[0][1]
 
@@ -108,5 +110,6 @@ while True:
 
     if loopLastPost != lastPost:
         toPipe(mostRecentItem())
-    serverinfo((SERVER, PORT))
+    print (loopLastPost)
+    #serverinfo((SERVER, PORT))
     time.sleep(sleeptime)

@@ -45,9 +45,9 @@ async def background_loop():
     for m in load_notifications_list():
         mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
     print(mentions_string)
-    pipe_fd = os.open("/tmp/pipe2bot", os.O_RDONLY | os.O_NONBLOCK)
-    while not client.is_closed:
-        with os.fdopen(pipe_fd) as pipe:
+    pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
+    with os.fdopen(pipe_fd) as pipe:
+        while not client.is_closed:
             try:
                 message = pipe.read()
             except Exception as e:
@@ -57,8 +57,8 @@ async def background_loop():
                 print("Received: '%s'" % message.strip("\n"))
                 for m in load_notifications_list():
                     mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
-                await client.send_message(channel_chat,
-                                              "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
+                #await client.send_message(channel_chat, "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
+                print(message.strip("\n"))
             mentions_string = ""
         await asyncio.sleep(5)
 

@@ -54,7 +54,7 @@ async def background_loop():
                 print("Received: '%s'" % message.strip("\n"))
                 for m in load_notifications_list():
                     mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
-                    await client.send_message(channel_chat,
+                await client.send_message(channel_chat,
                                               "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
             await asyncio.sleep(1)
             mentions_string = ""

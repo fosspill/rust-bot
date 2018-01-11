@@ -1,6 +1,7 @@
 import asyncio
 import random
 import time
+import os
 
 import discord
 import feedparser
@@ -8,6 +9,8 @@ import valve.source.a2s
 
 SERVER = "163.172.17.175"
 PORT = 30616
+
+pipe_path = "/tmp/pipe2bot"
 
 LASTMSGTIME = time.time()
 
@@ -24,45 +27,36 @@ async def on_ready():
 
 
 async def background_loop():
-    url = "https://rust.facepunch.com/rss/blog/"
-    feed = feedparser.parse(url)
-    post = feed['entries'][0]
-
     await client.wait_until_ready()
     channel_chat = client.get_channel("347799017671098369")
     server = client.get_server("155794864305471497")
     myself = server.get_member("385874561792737293")
-    #    with open('avatar.png', 'rb') as file:
-    #        avatar = file.read()
-
-    #    await client.edit_profile(None, avatar=avatar)
 
     await client.change_presence(game=discord.Game(name='Rust Configuration'))
     await client.change_nickname(myself, "Trusty Rusty")
-
-    print("Initializing rss check for {}".format(feed['feed']['title']))
-    print("Most recent item:\n{}\n{}".format(post['title'], post['link']))
 
     print("On list: {}".format(', '.join(map(str, load_notifications_list()))))
     mentions_string = ""
     for m in load_notifications_list():
         mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
     print(mentions_string)
+    pipe_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
     while not client.is_closed:
-        try:
-            feed = feedparser.parse(url)
-        except:
-            await asyncio.sleep(10)
-            continue
-
-        if post != feed['entries'][0]:
-            post = feed['entries'][0]
+        with os.fdopen(pipe_fd) as pipe:
+            try:
+                message = pipe.read()
+            except:
+                message = False
+            if message:
+                print("Received: '%s'" % message.strip("\n"))
+                for m in load_notifications_list():
+                    mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
+                    await client.send_message(channel_chat,
+                                              "NEW POST!\n{}\n{}".format(message.strip("\n"), mentions_string))
+            await asyncio.sleep(1)
             mentions_string = ""
-            for m in load_notifications_list():
-                mentions_string = "{}".format(mentions_string) + "<@{}> ".format(m)
-            await client.send_message(channel_chat,
-                                      "NEW POST!\n{}\n{}\n{}".format(post['title'], post['link'], mentions_string))
-        await asyncio.sleep(60)
+
+            await asyncio.sleep(60)
 
 
 @client.event

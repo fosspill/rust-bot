@@ -71,7 +71,7 @@ async def on_message(message):
     boss = server.get_member("152135474452889601")
 
     if message.content.startswith('!online')  and (time.time() - LASTMSGTIME) > 2:
-        await client.send_typing(channel_chat)
+        await client.send_typing(message.channel)
         await asyncio.sleep(1.5)
         await client.send_message(message.channel, '{}'.format(player_list((SERVER, PORT))))
 
@@ -107,14 +107,13 @@ async def on_message(message):
 
 def player_list(server):
     serverdict = json.load(open(server_cache))
-    try:
-        players = serverdict["playernames"]
-        returnlist = "{}/{} players: {}".format(serverdict["player_count"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"])))
-        return returnlist
+    print("{}/{} players: {}".format(serverdict["player_count"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"]))))
+    returnlist = "{}/{} players: {}".format(serverdict["player_count"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"])))
+    return returnlist
 
-    except Exception as e:
-        print(e)
-        return random.choice(open('lines').readlines())
+    #except Exception as e:
+    #    print(e)
+    #    return random.choice(open('lines').readlines())
 
 def save_to_notification_list(user_id):
     list = load_notifications_list()

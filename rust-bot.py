@@ -107,6 +107,7 @@ async def on_message(message):
 
 def player_list(server):
     serverdict = json.load(open(server_cache))
+    print (serverdict)
     try:
         players = serverdict["playernames"]
         num_players, max_players = serverdict["player_count"], serverdict["max_players"]

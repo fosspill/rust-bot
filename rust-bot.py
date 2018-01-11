@@ -106,13 +106,15 @@ async def on_message(message):
 
 
 def player_list(server):
-    serverdict = json.load(open(server_cache))
-    returnlist = "{}/{} players: {}".format(serverdict["num_players"], serverdict["max_players"], ', '.join(map(str, serverdict["playernames"])))
-    return returnlist
+    try:
+        serverdict = json.load(open(server_cache))
+        returnlist = "{}/{} players: {}".format(serverdict["num_players"], serverdict["max_players"],
+                                                ', '.join(map(str, serverdict["playernames"])))
+        return returnlist
 
-    #except Exception as e:
-    #    print(e)
-    #    return random.choice(open('lines').readlines())
+    except Exception as e:
+        print(e)
+        return random.choice(open('lines').readlines())
 
 def save_to_notification_list(user_id):
     list = load_notifications_list()
